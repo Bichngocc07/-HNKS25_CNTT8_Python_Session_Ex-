@@ -1,20 +1,16 @@
 print("--- TIẾP NHẬN VÀ CHUẨN HÓA SINH HIỆU ---")
 
-# 1. Nhận dữ liệu thô ban đầu (Mặc định là chuỗi - str)
 patient_id_raw = input("Nhập mã bệnh nhân: ")
 temperature_raw = input("Nhập nhiệt độ cơ thể: ")
 heart_rate_raw = input("Nhập nhịp tim: ")
 
-# 2. Xử lý chuẩn hóa dữ liệu (Type Casting gián tiếp)
-# Thay thế dấu phẩy thành dấu chấm nếu điều dưỡng quen tay nhập kiểu VN (Ví dụ: 37,5 -> 37.5)
+
 temperature_cleaned = temperature_raw.replace(",", ".")
 
-# Thực hiện ép kiểu
 patient_id = patient_id_raw.strip()
 temperature = float(temperature_cleaned)
 heart_rate = int(heart_rate_raw)
 
-# 3. Xuất kết quả kiểm tra định dạng hiển thị ra Monitor
 print("\n" + "="*15 + " KẾT QUẢ CHUẨN HÓA DỮ LIỆU " + "="*15)
 print(f"Mã bệnh nhân: {patient_id}")
 print(f"Nhiệt độ cơ thể: {temperature} độ C")
