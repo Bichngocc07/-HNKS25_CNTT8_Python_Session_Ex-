@@ -2,28 +2,22 @@ print("==================================================")
 print("     MODULE KIOSK NHẬP LIỆU NHÂN SỰ SỐ (BACKEND)")
 print("==================================================")
 
-# Sử dụng vòng lặp for chạy đúng 3 lần cho 3 nhân sự mới
 for index in range(1, 4):
     print(f"\n--- ĐANG TIẾP NHẬN NHÂN SỰ THỨ {index} ---")
     
-    # 1. Thu thập dữ liệu thô từ bàn phím
     raw_id = input("Nhập mã nhân viên (Ví dụ: NV001): ")
     raw_name = input("Nhập họ và tên nhân viên: ")
     raw_dept = input("Nhập phòng ban công tác: ")
     
-    # 2. Làm sạch dữ liệu (Xóa bỏ khoảng trắng thừa ở hai đầu chuỗi)
     employee_id = raw_id.strip()
     employee_name = raw_name.strip()
     employee_department = raw_dept.strip()
     
-    # 3. Xử lý Edge cases (Chốt chặn bẫy bỏ trống hoặc chỉ nhập toàn dấu cách)
     if employee_id == "" or employee_name == "":
         print("\n[CẢNH BÁO] Dữ liệu tên hoặc mã không hợp lệ! Hủy bỏ tạo hồ sơ cho nhân viên này.")
         print("-" * 50)
-        # Bỏ qua khối lệnh in phiếu bên dưới, chuyển ngay sang lượt nhân sự tiếp theo
         continue
         
-    # 4. Định dạng và xuất Phiếu Hồ sơ Điện tử nếu dữ liệu hợp lệ
     print("\n===================================")
     print("        PHIẾU HỒ SƠ ĐIỆN TỬ")
     print("===================================")
