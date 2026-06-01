@@ -1,35 +1,28 @@
-# 4.1. Nhập số lượng nhân viên
-num_employees = int(input("Nhập số lượng nhân viên: "))
+total_employees = int(input("Enter number of employees: "))
+print("") 
 
-# 4.2. Nhập thông tin nhân viên
-employees = []
-for i in range(num_employees):
-    name = input(f"Nhập tên nhân viên {i + 1}: ")
-    days_worked = int(input(f"Nhập số ngày làm việc của {name}: "))
-    employees.append((name, days_worked))
-
-# 4.3. Kiểm tra dữ liệu hợp lệ
-for name, days_worked in employees:
-    if days_worked < 0 or days_worked > 22:
-        print("Dữ liệu không hợp lệ")
+for i in range(1, total_employees + 1):
+    
+    employee_name = input("Enter employee name: ")
+    working_days = int(input("Enter number of working days: "))
+    
+    if working_days < 0 or working_days > 22:
+        print("Invalid data")
+        print("") 
         continue
-
-    # 4.4. Kiểm tra nhân viên nghỉ toàn bộ
-    if days_worked == 0:
-        print(f"Nhân viên {name} nghỉ toàn bộ tháng")
-        continue
-
-    # 4.5. Hiển thị biểu đồ ngày làm việc
-    print(f"Biểu đồ ngày làm việc của {name}:")
-    for j in range(days_worked):
+        
+    print(f"{employee_name}: ", end="")
+    for star in range(0, working_days):
         print("*", end="")
-    print()
-
-    # 4.6. Thống kê mức độ làm việc
-    for name, days_worked in employees:
-        if days_worked >= 18:
-            print(f"Nhân viên {name}: Làm việc chăm chỉ")
-        elif days_worked < 10:
-            print(f"Nhân viên {name}: Làm việc ít")
-        else:
-            print(f"Nhân viên {name}: Làm việc bình thường")
+    print("") 
+    
+    if working_days == 0:
+        print("Employee absent for the entire month")
+    elif working_days >= 18:
+        print("Work hard")
+    elif working_days < 10:
+        print("Work little")
+    else:
+        print("Work normally")
+        
+    print("") 
