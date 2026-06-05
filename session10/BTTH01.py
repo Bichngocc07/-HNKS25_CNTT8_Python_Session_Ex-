@@ -2,7 +2,6 @@ cart_items = [
     ["P001", "Dien thoai iPhone 15", 1, 25000000],
     ["P002", "Op lung Silicon", 2, 150000]
 ]
-# Chương trình hiển thị menu CLI gồm các chức năng sau:
 print("===========================================================")
 print("               SHOPEE CART MANAGEMENT SYSTEM               ")
 print("===========================================================")
