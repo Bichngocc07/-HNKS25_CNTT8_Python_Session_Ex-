@@ -1,6 +1,4 @@
-# =========================================================================
-# CƠ SỞ DỮ LIỆU BAN ĐẦU
-# =========================================================================
+
 students = [
     {
         "student_id": "RA001",
@@ -26,7 +24,6 @@ while True:
     
     choice = input("> Mời chọn chức năng (1-5): ").strip()
     
-    # --- BẤY 3: Kiểm tra lựa chọn menu nằm ngoài phạm vi 1-5 ---
     if choice not in ["1", "2", "3", "4", "5"]:
         print("Lựa chọn không hợp lệ, vui lòng nhập lại!\n")
         continue
@@ -44,13 +41,10 @@ while True:
         print("Cổng điều hướng Rikkei Academy đã đóng an toàn.")
         break
 
-# =========================================================================
-# CÁC HÀM PHỤ TRỢ (HELPER FUNCTIONS)
-# =========================================================================
+
 
 def validate_score(score_input):
     """Kiểm tra điểm số nhập vào có phải số thực hợp lệ từ 0 đến 10 hay không."""
-    # Thay thế dấu chấm một lần để kiểm tra chuỗi số thập phân qua .isdigit()
     if score_input.replace(".", "", 1).isdigit():
         score = float(score_input)
         if 0 <= score <= 10:
@@ -100,7 +94,7 @@ def add_student(student_list):
     while True:
         student_id = input("Nhập mã học viên: ").strip().upper()
         if not student_id:
-            print("⚠️ Mã học viên không được để trống!")
+            print("Mã học viên không được để trống!")
             continue
             
         # Gọi helper function kiểm tra trùng mã
@@ -146,55 +140,4 @@ def add_student(student_list):
     print("Thêm học viên thành công!\n")
 
 def update_score(student_list):
-    """Chức năng 3: Cập nhật điểm thi Toán và Anh theo mã học viên."""
-    print("\n--- CẬP NHẬT ĐIỂM THI HỌC VIÊN ---")
-    search_id = input("Nhập mã học viên cần cập nhật: ").strip().upper()
     
-    # Tìm index học viên qua hàm helper
-    index = find_student_by_id(student_list, search_id)
-    
-    # Bẫy 3: Không tìm thấy mã học viên
-    if index == -1:
-        print(f"Không tìm thấy học viên mang mã [{search_id}].")
-    else:
-        student = student_list[index]
-        print(f"Tìm thấy học viên: {student['name']}")
-        
-        # Nhập và validate điểm mới
-        while True:
-            math_input = input("Nhập điểm Toán mới: ").strip()
-            if validate_score(math_input):
-                student["math_score"] = float(math_input)
-                break
-            print("Điểm không hợp lệ, phải là số từ 0 đến 10! Vui lòng nhập lại.")
-            
-        while True:
-            english_input = input("Nhập điểm Tiếng Anh mới: ").strip()
-            if validate_score(english_input):
-                student["english_score"] = float(english_input)
-                break
-            print("Điểm không hợp lệ, phải là số từ 0 đến 10! Vui lòng nhập lại.")
-            
-        print(f"Cập nhật điểm thành công cho học viên [{search_id}]!\n")
-
-def evaluate_students(student_list):
-    """Chức năng 4: Tính toán điểm trung bình và hiển thị xếp loại học lực."""
-    print("\n--- BẢNG ĐÁNH GIÁ HỌC LỰC HỌC VIÊN ---")
-    if len(student_list) == 0:
-        print("Không có dữ liệu học viên để đánh giá.")
-    else:
-        print(f"{'Mã HV':<6} | {'Họ và Tên':<20} | {'ĐTB':<5} | {'Xếp Loại'}")
-        print("-" * 48)
-        for s in student_list:
-            # Biểu thức tính điểm trung bình cuốn chiếu
-            avg_score = (s["math_score"] + s["english_score"]) / 2
-            # Gọi helper function lấy chữ phân loại học lực
-            rank = get_rank(avg_score)
-            print(f"{s['student_id']:<6} | {s['name']:<20} | {avg_score:<5.2f} | {rank}")
-        print("-" * 48)
-    print("")
-
-# =========================================================================
-# LUỒNG CHẠY CHÍNH (MAIN FLOW - GIAO DIỆN MENU)
-# =========================================================================
-
