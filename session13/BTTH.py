@@ -40,3 +40,10 @@ while True:
         danh_sach_nhan_vien.append(nhan_vien_moi)
         print(f"Thêm nhân viên thành công! ID: {ma_nv}")
         id_tu_dong += 1
+# Chức năng 4:
+    elif choice == "4":
+        print("  Thoát chương trình! ")
+        break
+    else:
+        print("Lựa chọn không hợp lệ! Vui lòng chỉ nhập số từ 1 đến 4.")
+        continue
