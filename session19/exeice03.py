@@ -1,24 +1,19 @@
 import logging
 from datetime import datetime
 
-# =============================================================================
-# 1. CẤU HÌNH THƯ VIỆN LOGGING (Yêu cầu hình 3)
-# =============================================================================
+
 logging.basicConfig(
     filename='tournament_app.log',
     filemode='a',
     format='[%(asctime)s] - [%(levelname)s] - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S,%f', # Định dạng thời gian bao gồm cả mili giây
+    datefmt='%Y-%m-%d %H:%M:%S,%f', 
     level=logging.INFO
 )
 
-# Sửa lỗi hiển thị mili giây cắt ngắn 3 chữ số cho đúng định dạng ảnh mẫu
 logging.Formatter.formatTime = lambda self, record, datefmt=None: \
     datetime.fromtimestamp(record.created).strftime('%Y-%m-%d %H:%M:%S,%f')[:-3]
 
-# =============================================================================
-# 2. DỮ LIỆU BAN ĐẦU (Quản lý các trận đấu dưới dạng List chứa các Dictionary)
-# =============================================================================
+
 matches = [
     {
         "match_id": "M01",
@@ -38,9 +33,7 @@ matches = [
     }
 ]
 
-# =============================================================================
-# 3. CÁC HÀM PHỤ TRỢ (HELPER FUNCTIONS)
-# =============================================================================
+
 def determine_winner(match):
     """
     Xác định kết quả hoặc đội chiến thắng của một trận đấu.
@@ -52,7 +45,6 @@ def determine_winner(match):
         str: Tên đội thắng, "Draw" nếu hòa, hoặc "Not Started" nếu chưa diễn ra.
     """
     try:
-        # Bẫy dữ liệu nâng cao: Đề phòng trường hợp API bị thiếu key score_a hoặc score_b
         if "score_a" not in match or "score_b" not in match:
             raise KeyError("Dữ liệu trận đấu bị thiếu trường điểm số (score_a/score_b)!")
             
@@ -71,9 +63,7 @@ def determine_winner(match):
         return "Error"
 
 
-# =============================================================================
-# 4. HÀM CHỨC NĂNG CHÍNH (MAIN CORE FUNCTIONS)
-# =============================================================================
+
 
 # CHỨC NĂNG 1: HIỂN THỊ DANH SÁCH TRẬN ĐẤU & KẾT QUẢ
 def display_matches(matches_list):
@@ -87,7 +77,6 @@ def display_matches(matches_list):
         print("-" * 60)
         for m in matches_list:
             try:
-                # Đảm bảo an toàn dữ liệu, phòng hờ lỗi Key độc lập cho từng thuộc tính
                 m_id = m.get("match_id", "N/A")
                 t_a = m.get("team_a", "N/A")
                 t_b = m.get("team_b", "N/A")
@@ -108,7 +97,6 @@ def add_match(matches_list):
     """Tiếp nhận trận đấu mới vào danh sách kèm kiểm tra các ràng buộc đầu vào."""
     print("\n--- THÊM TRẬN ĐẤU MỚI ---")
     
-    # 1. Kiểm tra mã trận đấu (Không rỗng, không trùng)
     while True:
         match_id = input("Nhập mã trận đấu: ").strip().upper()
         if not match_id:
@@ -123,7 +111,6 @@ def add_match(matches_list):
             continue
         break
         
-    # 2. Kiểm tra tên Đội A và Đội B
     while True:
         team_a = input("Nhập tên đội A: ").strip()
         if not team_a:
@@ -140,7 +127,6 @@ def add_match(matches_list):
             continue
         break
 
-    # Đóng gói dữ liệu trận đấu mới ở trạng thái mặc định ban đầu là Pending
     new_match = {
         "match_id": match_id,
         "team_a": team_a,
@@ -173,7 +159,6 @@ def update_match_score(matches_list):
 
     print(f"Trận đấu: {target_match['team_a']} vs {target_match['team_b']} ({target_match['status']})")
     
-    # 1. Nhập và bẫy lỗi điểm môn đội A
     while True:
         try:
             score_a_input = input("Nhập điểm đội A: ").strip()
@@ -187,7 +172,6 @@ def update_match_score(matches_list):
             print("Điểm số phải là số nguyên. Vui lòng nhập lại.")
             logging.error(f"Invalid score input. Error: Invalid literal for int() with base 10: '{score_a_input}'")
             
-    # 2. Nhập và bẫy lỗi điểm môn đội B
     while True:
         try:
             score_b_input = input("Nhập điểm đội B: ").strip()
@@ -201,7 +185,6 @@ def update_match_score(matches_list):
             print("Điểm số phải là số nguyên. Vui lòng nhập lại.")
             logging.error(f"Invalid score input. Error: Invalid literal for int() with base 10: '{score_b_input}'")
 
-    # 3. Xử lý lỗi Logic Ẩn (Edge Case): Hòa số điểm 0-0 nhưng trạng thái vẫn cần xác nhận
     if score_a == 0 and score_b == 0:
         confirm = input("Tỷ số đang là 0-0. Trọng tài có xác nhận trận đấu đã hoàn thành không? (y/n): ").strip().lower()
         if confirm == 'y':
@@ -209,10 +192,8 @@ def update_match_score(matches_list):
         else:
             target_match["status"] = "Pending"
     else:
-        # Nếu có ít nhất một đội ghi điểm số > 0, mặc định chuyển trạng thái sang Completed
         target_match["status"] = "Completed"
 
-    # Cập nhật giá trị vào biến dữ liệu gốc
     target_match["score_a"] = score_a
     target_match["score_b"] = score_b
     
