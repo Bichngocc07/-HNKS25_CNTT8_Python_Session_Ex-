@@ -10,7 +10,6 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S,%f'
 )
 
-# Ghi đè cấu hình để lấy đúng 3 chữ số mili giây ở đuôi thời gian log cho giống ảnh mẫu
 logging.Formatter.formatTime = lambda self, record, datefmt=None: \
     datetime.fromtimestamp(record.created).strftime('%Y-%m-%d %H:%M:%S,%f')[:-3]
 
@@ -37,7 +36,6 @@ DRINK_MENU = {
     "T1": {"name": "Trà Sen Vàng", "price": 45000}
 }
 
-# Giỏ hàng hiện tại lưu danh sách các dictionary: [{'code':..., 'quantity':...}]
 current_order = []
 
 
@@ -64,7 +62,6 @@ def view_menu():
         print(f"[{code}] - {info['name']} - {info['price']:,} VNĐ")
 
 
-# HÀM BỔ TRỢ TÍNH TỔNG TIỀN (Phục vụ cho việc thống kê và làm Unit Test)
 def calculate_total(order_list):
     """
     Tính toán tổng tiền hiện có của một giỏ hàng.
@@ -93,39 +90,32 @@ def add_to_order(order_list, drink_code, quantity_str):
         drink_code (str): Mã sản phẩm do nhân viên nhập.
         quantity_str (str): Chuỗi số lượng nhập từ bàn phím.
     """
-    # Xử lý chuẩn hóa chuỗi đầu vào: xóa khoảng trắng và chuyển chữ hoa
     code = drink_code.strip().upper()
     
-    # Chặng 1: Kiểm tra mã đồ uống có tồn tại không
     if code not in DRINK_MENU:
         logging.warning(f"ItemNotFoundError - Code: {code}")
         raise ItemNotFoundError(
             "Mã đồ uống không hợp lệ, vui lòng kiểm tra lại thực đơn!"
         )
         
-    # Chặng 2: Kiểm tra định dạng số lượng nhập vào (ValueError)
     try:
         quantity = int(quantity_str)
     except ValueError:
         logging.error("ValueError - Invalid quantity input")
         raise ValueError("Vui lòng nhập số lượng là một số nguyên!")
         
-    # Chặng 3: Kiểm tra nghiệp vụ giá trị số lượng phải lớn hơn 0
     if quantity <= 0:
         logging.warning(f"InvalidQuantityError - Quantity: {quantity}")
         raise InvalidQuantityError("Số lượng phải lớn hơn 0!")
 
-    # Nếu tất cả dữ liệu hợp lệ, tiến hành gộp hoặc thêm mới vào giỏ hàng
     logging.info(f"Added {quantity} of {code} to order")
     
-    # Thuật toán kiểm tra nếu món này đã có trong giỏ thì tăng số lượng
     for item in order_list:
         if item['code'] == code:
             item['quantity'] += quantity
             print(f"Đã cập nhật thêm {quantity} x {DRINK_MENU[code]['name']} vào giỏ hàng.")
             return
 
-    # Nếu chưa có thì append một dictionary mới vào list giỏ hàng
     order_list.append({'code': code, 'quantity': quantity})
     print(f"Đã thêm {quantity} x {DRINK_MENU[code]['name']} vào giỏ hàng.")
 
@@ -135,8 +125,8 @@ def view_order(order_list):
     """In chi tiết các món ăn có trong giỏ hàng hiện tại và tính tổng tiền."""
     if len(order_list) == 0:
         print("Giỏ hàng trống, vui lòng chọn món (Chức năng 2).")
-        return False # Trả về tín hiệu danh sách rỗng
-
+        return False 
+        
     print("--- GIỎ HÀNG HIỆN TẠI ---")
     print(f"{'Mã SP':<5} | {'Tên đồ uống':<20} | {'Đơn giá':<8} | {'Số lượng':<8} | {'Thành tiền'}")
     print("-" * 64)
@@ -171,7 +161,7 @@ def checkout(order_list):
     if confirm == 'y':
         print("Thanh toán thành công.")
         logging.info("Checkout successful")
-        order_list.clear() # Làm rỗng danh sách giỏ hàng
+        order_list.clear() 
         print("Giỏ hàng đã được làm trống.")
     elif confirm == 'n':
         print("Đã hủy thao tác thanh toán. Quay lại menu chính.")
