@@ -1,9 +1,7 @@
 import logging
 import re
 
-# =============================================================================
-# CẤU HÌNH NHẬT KÝ GIAO DỊCH (LOGGING)
-# =============================================================================
+
 logging.basicConfig(
     filename='momo_transactions.log',
     filemode='a',
@@ -18,9 +16,7 @@ logging.Formatter.formatTime = lambda self, record, datefmt=None: \
     f",{int(record.msecs):03d}"
 
 
-# =============================================================================
-# ĐỊNH NGHĨA CÁC NGOẠI LỆ TÙY CHỈNH
-# =============================================================================
+
 class InvalidAmountError(Exception):
     """Lỗi xảy ra khi số tiền giao dịch nhỏ hơn hoặc bằng 0."""
     pass
@@ -35,9 +31,7 @@ class InsufficientBalanceError(Exception):
 current_balance = 0
 
 
-# =============================================================================
-# CÁC HÀM CHỨC NĂNG THEO Y HỆT FORM CỦA BẠN
-# =============================================================================
+
 
 def play_menu():
     print("======== VÍ MOMO GIẢ LẬP ========")
@@ -58,7 +52,6 @@ def nap_tien():
     print("----- NẠP TIỀN VÀO VÍ -----")
     while True:
         try:
-            # Sửa tên biến nhập vào thành 'amount' để tránh đè hỏng tên hàm 'nap_tien'
             amount_input = input("Nhập số tiền cần nạp: ").strip()
             amount = int(amount_input)
             
@@ -70,7 +63,6 @@ def nap_tien():
             print(f"\nNạp tiền thành công: +{amount:,} VND")
             print(f"Số dư hiện tại: {current_balance:,} VND")
                 
-            # Ghi lại lịch sử giao dịch thành công mức INFO vào file log
             logging.info(f"Deposit successful: +{amount} VND. Current Balance: {current_balance}")
             break
                 
@@ -147,6 +139,5 @@ def main():
             play_menu()
 
 
-# Kích hoạt hệ thống chạy menu điều hướng chính
 if __name__ == "__main__":
     main()
