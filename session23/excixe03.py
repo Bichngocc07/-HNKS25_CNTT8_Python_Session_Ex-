@@ -41,7 +41,6 @@ class InvalidDateTimeError(Exception):
 # MÔ PHỎNG CÁC PHÂN HỆ CHỨC NĂNG (GỘP MODULES)
 # =============================================================================
 
-# --- Phân hệ hệ thống: utils/helper.py ---
 def safe_create_directory(dir_name="aviation_logs"):
     """Kiểm tra và tạo thư mục một cách an toàn, bẫy lỗi trùng lặp tên."""
     if not os.path.exists(dir_name):
@@ -50,25 +49,19 @@ def safe_create_directory(dir_name="aviation_logs"):
     print("[SYSTEM] Tạo thư mục thành công!")
 
 
-# --- Phân hệ nghiệp vụ: core/logistics.py ---
 def allocate_flight_sections(passengers):
     """Tính toán số lượng khoang máy bay dựa trên quy chuẩn 50 khách/khoang."""
-    # Áp dụng thuật toán làm tròn lên (Ceiling) theo quy tắc của Math
     sections = math.ceil(passengers / 50)
     return sections
 
 
-# --- Phân hệ nghiệp vụ: core/time.py ---
 def calculate_flight_eta(depart_str, duration_min):
     """Phân tích cú pháp chuỗi thời gian khởi hành và dự phóng điểm hạ cánh."""
-    # Ép kiểu từ dạng chuỗi văn bản sang đối tượng datetime thực tế để tính toán
     depart_obj = datetime.strptime(depart_str, "%Y-%m-%d %H:%M:%S")
-    # Cộng thêm khoảng thời gian bay (duration) bằng timedelta
     eta_obj = depart_obj + timedelta(minutes=int(duration_min))
     return eta_obj
 
 
-# --- Phân hệ nghiệp vụ: core/manager.py ---
 def add_new_flight(flights_list, flight_id, passengers, depart_time, duration_min, status):
     """Đóng gói dữ liệu và tiếp nhận một chuyến bay mới vào danh sách."""
     new_flight = {
@@ -104,21 +97,18 @@ def main():
         if choice == "1":
             print("\n----- DANH SÁCH CHUYẾN BAY & HIỆU SUẤT -----")
             for fl in flights:
-                # Tính toán số khoang máy bay cần trưng dụng
                 sections = allocate_flight_sections(fl["passengers"])
                 print(f"Mã chuyến bay: {fl['flight_id']} | Hành trình: {fl['status']} | Khởi hành: {fl['depart_time']} | Số khách: {fl['passengers']} | Số khoang: {sections} khoang.")
 
         # CHỨC NĂNG 2: TIẾP NHẬN CHUYẾN BAY MỚI
         elif choice == "2":
             print("\n----- TIẾP NHẬN CHUYẾN BAY MỚI -----")
-            # Bẫy lỗi 1: Mã chuyến bay không được để trống
             while True:
                 f_id = input("Nhập mã chuyến bay: ").strip().upper()
                 if f_id:
                     break
                 print("Lỗi: Mã chuyến bay không được bỏ trống!")
 
-            # Nhập số lượng hành khách với bẫy lỗi nhập chữ (ValueError)
             while True:
                 try:
                     p_count = int(input("Nhập số lượng hành khách: "))
@@ -128,17 +118,14 @@ def main():
                 except ValueError:
                     print("Lỗi: Vui lòng nhập số lượng hành khách là một số nguyên!")
 
-            # Bẫy lỗi 2: Nhập sai định dạng ngày tháng
             while True:
                 dep_t = input("Nhập thời gian khởi hành (YYYY-MM-DD HH:MM:SS): ").strip()
                 try:
-                    # Thử nghiệm kiểm tra định dạng
                     datetime.strptime(dep_t, "%Y-%m-%d %H:%M:%S")
                     break
                 except ValueError:
                     print("Lỗi định dạng ngày tháng! Vui lòng nhập đúng chuẩn cấu trúc YYYY-MM-DD HH:MM:SS.")
 
-            # Nhập thời gian bay
             while True:
                 try:
                     duration = int(input("Nhập thời gian bay (phút): "))
@@ -150,7 +137,6 @@ def main():
 
             status_route = input("Nhập chặng bay (Ví dụ: Hà Nội - Đà Nẵng): ").strip()
 
-            # Gọi hàm đóng gói lưu trữ
             add_new_flight(flights, f_id, p_count, dep_t, duration, status_route)
             print(f"🎉 Tiếp nhận thành công chuyến bay {f_id}!")
 
@@ -166,11 +152,9 @@ def main():
                         target_flight = fl
                         break
                 
-                # Bẫy lỗi: Nếu duyệt hết danh sách mà không tìm thấy chuyến bay khớp mã
                 if not target_flight:
                     raise FlightNotFoundError(f"Mã chuyến bay '{search_id}' không tồn tại trên hệ thống!")
                 
-                # Thực hiện tính toán thời điểm hạ cánh dự kiến
                 eta_res = calculate_flight_eta(target_flight["depart_time"], target_flight["duration_min"])
                 
                 print(f" -> Chuyến bay {search_id} (Hành trình: {target_flight['status']})")
@@ -191,7 +175,6 @@ def main():
             print("\nCảm ơn quý khách và tổ bay đã sử dụng hệ thống! Hệ thống đang ngắt kết nối...")
             break
 
-        # BẪY LỖI MENU: Lựa chọn nằm ngoài dải số từ 1 đến 5
         else:
             print("Lựa chọn không hợp lệ! Vui lòng thao tác nhập số từ 1 đến 5 nhé các bạn yêu.")
             show_aviation_menu()
