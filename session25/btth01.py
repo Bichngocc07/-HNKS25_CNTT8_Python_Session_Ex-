@@ -4,18 +4,15 @@ import re
 # 1. ĐỊNH NGHĨA LỚP BANKACCOUNT (CORE OOP)
 # =============================================================================
 class BankAccount:
-    # Các thuộc tính cấp lớp (Class Attributes) dùng chung toàn hệ thống
     bank_name = "Vietcombank"
     transaction_fee = 2000  # Mặc định ban đầu phí giao dịch là 2,000 VNĐ
 
     def __init__(self, account_number, account_name):
         """Hàm khởi tạo một tài khoản Vietcombank mới."""
-        # Áp dụng Đóng gói bảo mật (Encapsulation): Chuyển các thuộc tính thành Private (__)
         self.__account_number = account_number
         self.__account_name = None
-        self.__balance = 0  # Số dư ban đầu mặc định bằng 0
+        self.__balance = 0  
         
-        # Kích hoạt setter để chuẩn hóa tên chủ tài khoản ngay khi khởi tạo
         self.account_name = account_name
 
     # -------------------------------------------------------------------------
@@ -44,12 +41,10 @@ class BankAccount:
         """
         cleaned_name = " ".join(new_name.strip().split())
         
-        # Nếu chuỗi rỗng hoặc chỉ chứa khoảng trắng thì bỏ qua và báo lỗi
         if not cleaned_name:
             print("Lỗi: Tên tài khoản không được để trống!")
             return
             
-        # Chuẩn hóa viết hoa toàn bộ ký tự (UPPERCASE) theo phom ngân hàng
         self.__account_name = cleaned_name.upper()
 
     # -------------------------------------------------------------------------
@@ -98,7 +93,6 @@ class BankAccount:
             print("Số tiền giao dịch phải lớn hơn 0.")
             return False
             
-        # Tổng số tiền cần trừ bao gồm số tiền rút + phí rút tiền hệ thống
         total_deduction = amount + BankAccount.transaction_fee
         
         if self.__balance < total_deduction:
@@ -123,7 +117,6 @@ class BankAccount:
 # 2. VÒNG LẶP ĐIỀU KHIỂN CHƯƠNG TRÌNH CHÍNH (MENU CLI)
 # =============================================================================
 def main():
-    # Biến lưu trữ phiên làm việc của tài khoản hiện tại, ban đầu bằng None
     current_account = None
 
     while True:
@@ -143,7 +136,6 @@ def main():
             print("\n--- MỞ TÀI KHOẢN MỚI ---")
             acc_num = input("Nhập số tài khoản (đúng 10 chữ số): ").strip()
             
-            # Sử dụng Static Method để thẩm định số tài khoản từ chặng đầu
             if not BankAccount.validate_account_number(acc_num):
                 print("Số tài khoản không hợp lệ! Phải là chuỗi số có 10 chữ số.")
                 continue
@@ -153,10 +145,8 @@ def main():
                 print("Tên tài khoản không được để trống!")
                 continue
 
-            # Khởi tạo thực thể đối tượng tài khoản mới
             current_account = BankAccount(acc_num, acc_name)
             
-            # Kiểm tra trường hợp nếu bộ gán tên bị lỗi rỗng ở bước Setter
             if current_account.account_name is None:
                 current_account = None  # Hủy trạng thái khởi tạo
                 continue
@@ -165,7 +155,6 @@ def main():
             print(f"Số tài khoản: {current_account.account_number}")
             print(f"Tên chủ tài khoản: {current_account.account_name}")
 
-        # BIỆN PHÁP CHẶN TRUY CẬP (Bẫy lỗi 4): Khóa các chức năng 2, 3, 4 nếu chưa tạo tài khoản
         elif choice in ["2", "3", "4"] and current_account is None:
             print("Hệ thống chưa có thông tin tài khoản.")
             print("Vui lòng mở tài khoản ở Chức năng 1 trước.")
@@ -204,11 +193,9 @@ def main():
             print("\n--- CẬP NHẬT TÊN CHỦ TÀI KHOẢN ---")
             new_name = input("Nhập tên mới: ")
             
-            # Lưu lại tên cũ để đối chiếu kiểm tra
             old_name = current_account.account_name
             current_account.account_name = new_name
             
-            # Nếu bộ setter từ chối gán (do tên rỗng), giữ nguyên trạng thái cũ
             if current_account.account_name == old_name or current_account.account_name is None:
                 print(" Tên tài khoản không được để trống")
                 current_account.account_name = old_name  # Khôi phục dữ liệu gốc
@@ -231,7 +218,6 @@ def main():
             print("\nCảm ơn bạn đã sử dụng Vietcombank Digibank!")
             break
 
-        # XỬ LÝ LỰA CHỌN MENU SAI QUY ĐỊNH
         else:
             print("Chức năng không hợp lệ. Vui lòng chọn từ 1 đến 6.")
 
