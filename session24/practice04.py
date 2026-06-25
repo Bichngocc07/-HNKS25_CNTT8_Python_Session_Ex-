@@ -4,14 +4,12 @@ import re
 # 1. ĐỊNH NGHĨA LỚP MEMBERCARD (HỆ THỐNG QUẢN LÝ THẺ THÀNH VIÊN OOP)
 # =============================================================================
 class MemberCard:
-    # Thuộc tính cấp lớp (Class Attribute): Tỷ giá quy đổi điểm mặc định (1 điểm = 1,000 VNĐ)
     point_value_vnd = 1000
 
     def __init__(self, card_id, name):
         """Khởi tạo một tài khoản thẻ thành viên mới."""
         self.card_id = card_id
         self.name = name
-        # Áp dụng Đóng gói bảo mật: Giấu thuộc tính điểm bằng cơ chế Private (__points)
         self.__points = 0
         self.tier = "Standard"
 
@@ -32,7 +30,6 @@ class MemberCard:
         Bẫy 2: Kiểm tra xem mã thẻ nhập vào có đúng chuẩn: RC + 2 chữ số hay không.
         Trả về True nếu hợp lệ, False nếu sai định dạng.
         """
-        # Sử dụng Biểu thức chính quy (Regular Expression) để quét chuỗi
         pattern = r"^RC\d{2}$"
         if re.match(pattern, card_id):
             return True
@@ -66,7 +63,6 @@ class MemberCard:
                 print("⚠️ Lỗi: Giá trị hóa đơn mua hàng phải lớn hơn 0!")
                 return
             
-            # Quy tắc tích lũy: Cứ mỗi 10,000 VNĐ hóa đơn tính được 1 điểm (lấy phần nguyên)
             new_earned_points = bill // 10000
             self.__points += new_earned_points
             
@@ -75,35 +71,32 @@ class MemberCard:
             print(f"Số điểm được tích: {new_earned_points}")
             print(f"Tổng điểm hiện tại: {self.__points}")
             
-            # Luồng xử lý tự động nâng hạng thẻ lên VIP khi tích lũy đạt từ 100 điểm trở lên
             if self.__points >= 100 and self.tier != "VIP":
                 self.tier = "VIP"
-                print("🎉 Chúc mừng! Khách hàng đã được nâng hạng lên VIP.")
+                print("Chúc mừng! Khách hàng đã được nâng hạng lên VIP.")
                 
             print(f"Hạng thẻ hiện tại: {self.tier}")
             
         except ValueError:
-            print("⚠️ Lỗi: Giá trị hóa đơn đầu vào phải là số!")
+            print("Lỗi: Giá trị hóa đơn đầu vào phải là số!")
 
     def redeem_points(self, points_to_use):
         """Chức năng 4: Khách hàng dùng điểm đổi giảm trừ trực tiếp vào hóa đơn."""
         try:
             pts = int(points_to_use)
             
-            # Bẫy 3: Kiểm tra tính hợp lệ của số điểm muốn tiêu
             if pts <= 0:
-                print("⚠️ Thao tác thất bại: Số điểm muốn sử dụng phải lớn hơn 0!")
+                print("Thao tác thất bại: Số điểm muốn sử dụng phải lớn hơn 0!")
                 return
             
             if pts > self.__points:
-                print("❌ Không thể đổi điểm!")
+                print("Không thể đổi điểm!")
                 print(f"Số điểm muốn sử dụng vượt quá số điểm hiện có.")
                 print(f"Điểm hiện tại của khách: {self.__points}")
                 print(f"Biến số điểm giữ nguyên.")
                 print(f"Số điểm sau giao dịch: {self.__points}")
                 return
 
-            # Thực hiện trừ số điểm tiêu và tính toán tiền giảm giá dựa vào tỷ giá cấp lớp
             self.__points -= pts
             discount_amount = pts * MemberCard.point_value_vnd
             
@@ -119,7 +112,6 @@ class MemberCard:
 # 2. VÒNG LẶP ĐIỀU KHIỂN CHƯƠNG TRÌNH CHÍNH (MAIN CONSOLE LOOP)
 # =============================================================================
 def main():
-    # Sử dụng Dictionary làm cơ sở dữ liệu lưu trữ tạm các đối tượng trong bộ nhớ
     cards_database = {}
 
     while True:
@@ -148,7 +140,6 @@ def main():
             print("\n--- ĐĂNG KÝ THẺ MỚI ---")
             card_id = input("Nhập mã số thẻ mới: ").strip().upper()
             
-            # Triển khai Static Method để kiểm tra định dạng chuỗi đầu vào đầu tiên
             if not MemberCard.is_valid_card_id(card_id):
                 print(" Mã thẻ không đúng định dạng! Vui lòng nhập mẫu chuẩn (Ví dụ: RC01, RC99).")
                 continue
@@ -162,7 +153,6 @@ def main():
                 print("Tên khách hàng không được để trống!")
                 continue
 
-            # Khởi tạo thực thể Object và đưa vào cơ sở dữ liệu lưu trữ
             new_card = MemberCard(card_id, name)
             cards_database[card_id] = new_card
             print("\nĐăng ký thẻ thành viên thành công!")
@@ -199,7 +189,6 @@ def main():
             print(f"Tỷ giá hiện tại là: 1 điểm = {MemberCard.point_value_vnd:,} VNĐ")
             new_val = input("Nhập tỷ giá mới cho 1 điểm: ").strip()
             
-            # Kích hoạt Class Method cập nhật đồng bộ toàn bộ lớp dữ liệu
             if MemberCard.update_point_value(new_val):
                 print("Cập nhật tỷ giá thành công!")
                 print(f"Tỷ giá mới: 1 điểm = {MemberCard.point_value_vnd:,} VNĐ")
@@ -209,7 +198,6 @@ def main():
             print("\nCảm ơn bạn đã sử dụng hệ thống thẻ thành viên Rikkei Coffee!")
             break
 
-        # BẪY MENU (Bẫy số 4): Nhập sai dải ký tự số từ 1 đến 6 hoặc nhập chữ bẩn
         else:
             print("Chức năng không hợp lệ. Vui lòng chọn từ 1 đến 6.")
 
