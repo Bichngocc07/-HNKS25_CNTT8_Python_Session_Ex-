@@ -4,20 +4,17 @@ import re
 # 1. ĐỊNH NGHĨA LỚP NETFLIXACCOUNT (CORE OOP)
 # =============================================================================
 class NetflixAccount:
-    # Các thuộc tính cấp lớp (Class Attributes) áp dụng chung toàn cầu
     platform_name = "Netflix"
-    max_profiles = 5  # Mặc định ban đầu tối đa 5 người xem
+    max_profiles = 5  
 
     def __init__(self, email, password):
         """Hàm khởi tạo tài khoản Netflix mới."""
         self.email = email
         
-        # Áp dụng Đóng gói bảo mật: Đặt các thuộc tính nhạy cảm là Private (__ mangling)
         self.__password = None
-        self.__plan = "Basic"  # Mặc định gói ban đầu là Basic
-        self.profiles = []     # Danh sách người xem rỗng
+        self.__plan = "Basic"  
+        self.profiles = []    
         
-        # Gọi setter để kiểm tra và gán mật khẩu an toàn ngay khi khởi tạo
         self.password = password
 
     # -------------------------------------------------------------------------
@@ -35,7 +32,6 @@ class NetflixAccount:
         Kiểm tra độ dài mật khẩu phải từ 5 ký tự trở lên.
         """
         if len(new_password) < 5:
-            # Quăng lỗi mặc định theo đúng yêu cầu nghiệp vụ
             raise ValueError("Password is too short")
         self._NetflixAccount__password = new_password  # Gán an toàn qua mangling
 
@@ -81,7 +77,6 @@ class NetflixAccount:
             print("Tên người xem không được để trống!")
             return
 
-        # Kiểm tra giới hạn dựa trên thuộc tính cấp lớp hiện thời
         if len(self.profiles) >= NetflixAccount.max_profiles:
             print(f"Đã đạt giới hạn số lượng Profile trên tài khoản này ({NetflixAccount.max_profiles} độc quyền)!")
             return
@@ -118,7 +113,6 @@ class NetflixAccount:
 # 2. VÒNG LẶP ĐIỀU KHIỂN CHƯƠNG TRÌNH CHÍNH (MENU)
 # =============================================================================
 def main():
-    # Ban đầu chưa đăng nhập, tài khoản hiện tại khởi tạo bằng None
     current_account = None
 
     while True:
@@ -138,7 +132,6 @@ def main():
             print("\n--- ĐĂNG KÝ TÀI KHOẢN ---")
             email = input("Nhập Email đăng ký: ").strip()
             
-            # Thẩm định Email bằng Static Method (Bẫy lỗi 1)
             if not NetflixAccount.validate_email(email):
                 print(" Email không hợp lệ, vui lòng chứa ký tự '@'!")
                 continue
@@ -146,7 +139,6 @@ def main():
             password = input("Nhập Mật khẩu (tối thiểu 5 ký tự): ")
             
             try:
-                # Khởi tạo đối tượng tài khoản (Kích hoạt bộ kiểm tra Setter - Bẫy lỗi 2)
                 current_account = NetflixAccount(email, password)
                 print("Đăng ký tài khoản mới và đăng nhập thành công!")
             except ValueError as e:
