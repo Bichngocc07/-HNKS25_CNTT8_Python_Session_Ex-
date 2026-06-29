@@ -15,9 +15,8 @@ class BaseAccount(ABC):
     def __init__(self, account_number, account_name):
         self.account_number = account_number
         self.__account_name = None
-        self._balance = 0.0  # Đóng gói số dư thuộc tính bảo mật nội bộ
+        self._balance = 0.0 
         
-        # Kích hoạt setter chuẩn hóa tên chủ tài khoản ngay khi khởi tạo
         self.account_name = account_name
 
     @property
@@ -93,7 +92,6 @@ class DigitalPremiumMixin:
 class SavingsAccount(BaseAccount):
     """Phân hệ tài khoản phục vụ khách hàng gửi tiết kiệm sinh lãi."""
     def __init__(self, account_number, account_name, interest_rate):
-        # Kế thừa thuộc tính cơ bản của lớp cha thông qua super()
         super().__init__(account_number, account_name)
         self.interest_rate = float(interest_rate)
 
@@ -115,7 +113,7 @@ class SavingsAccount(BaseAccount):
         total_deduction = amount + penalty_fee
         
         if self._balance < total_deduction:
-            print("❌ Giao dịch thất bại: Số dư tài khoản không đủ thanh toán tiền rút và phí phạt.")
+            print("Giao dịch thất bại: Số dư tài khoản không đủ thanh toán tiền rút và phí phạt.")
             return False
             
         self._balance -= total_deduction
@@ -150,9 +148,8 @@ class CreditAccount(BaseAccount):
             print("Số tiền rút phải lớn hơn 0 VND.")
             return False
             
-        # Kiểm tra điều kiện thấu chi an toàn
         if self._balance - amount < -self.credit_limit:
-            print("❌ Giao dịch thất bại: Vượt quá hạn mức thấu chi cho phép!")
+            print("Giao dịch thất bại: Vượt quá hạn mức thấu chi cho phép!")
             return False
             
         self._balance -= amount
@@ -166,7 +163,6 @@ class HybridAccount(SavingsAccount, DigitalPremiumMixin):
     Đảm bảo quy tắc MRO hoạt động chuẩn xác theo sơ đồ hình thoi.
     """
     def __init__(self, account_number, account_name, interest_rate):
-        # Thiết lập cấu trúc phân cấp tuần tự qua super() tương ứng với MRO danh sách
         super().__init__(account_number, account_name, interest_rate)
 
 
@@ -188,14 +184,12 @@ class ViettelMoneyGateway:
         return True
 
 
-# Hàm toàn cục độc lập áp dụng cơ chế Duck Typing (Bẫy 4)
 def process_payment(payment_gateway, account, amount):
     """
     Hàm xử lý thanh toán hóa đơn không quan tâm gateway thuộc class nào,
     miễn là đối tượng đó có phương thức 'execute_pay'.
     """
     try:
-        # Kiểm tra hành vi xem đối tượng truyền vào có hàm execute_pay hay không
         if not hasattr(payment_gateway, "execute_pay"):
             raise AttributeError("Cổng thanh toán không hợp lệ hoặc chưa được tích hợp")
             
@@ -203,22 +197,19 @@ def process_payment(payment_gateway, account, amount):
             print("❌ Thanh toán thất bại: Số dư tài khoản không đủ để thực hiện hóa đơn.")
             return False
             
-        # Kích hoạt cổng thực thi thanh toán độc lập
         gateway_status = payment_gateway.execute_pay(account, amount)
         if gateway_status:
-            # Khấu trừ dòng tiền của tài khoản qua phương thức rút tiền
             account._balance -= amount
             print("Xác thực thanh toán bằng Duck Typing thành công!")
             print(f"Tài khoản đã thanh toán hóa đơn giá trị: {amount:,} VND.")
             print(f"Số dư mới: {account.balance:,} VND.")
             
-            # Nếu tài khoản hiện hành là tài khoản Hybrid, kích hoạt thêm hoàn tiền Mixin số
             if isinstance(account, HybridAccount):
                 account.cashback_reward(account, amount)
             return True
             
     except AttributeError as e:
-        print(f"❌ [LỖI HỆ THỐNG]: {e}")
+        print(f" [LỖI HỆ THỐNG]: {e}")
         return False
 
 
@@ -256,7 +247,6 @@ def main():
                 continue
                 
             acc_num = input("Nhập số tài khoản 10 chữ số: ").strip()
-            # Sử dụng Static Method thẩm định số tài khoản đầu vào
             if not BaseAccount.validate_account_number(acc_num):
                 print("Số tài khoản không hợp lệ! Phải gồm đúng 10 chữ số.")
                 continue
@@ -282,7 +272,6 @@ def main():
             accounts.append(current_account)
             print(f"Chủ tài khoản: {current_account.account_name}")
 
-        # BIỆN PHÁP KHÓA AN TOÀN TRUY CẬP (Bẫy số 4): Yêu cầu tài khoản active trước
         elif choice in ["2", "3", "4", "5", "6"] and current_account is None:
             print("Hệ thống chưa có thông tin tài khoản. Vui lòng mở tài khoản ở Chức năng 1 trước.")
 
@@ -315,7 +304,6 @@ def main():
                 amount = float(input("Nhập số tiền giao dịch: ").replace(",", ""))
                 if tx_choice == "1":
                     if current_account.deposit(amount):
-                        # Khởi chạy logic hoàn tiền Mixin độc quyền cho tài khoản Hybrid khi nạp giao dịch số
                         if isinstance(current_account, HybridAccount):
                             current_account.cashback_reward(current_account, amount)
                         print(f"Nạp tiền thành công! Số dư mới: {current_account.balance:,} VND")
@@ -335,7 +323,7 @@ def main():
                 print(f"Tiền lãi nhận được: +{interest:,} VND")
                 print(f"Số dư mới sau khi cộng lãi: {current_account.balance:,} VND")
             else:
-                print("❌ Tính năng không hỗ trợ cho loại tài khoản hiện tại (Tín dụng không sinh lãi).")
+                print("Tính năng không hỗ trợ cho loại tài khoản hiện tại (Tín dụng không sinh lãi).")
 
         # CHỨC NĂNG 5: GỘP VÀ SO SÁNH TÀI KHOẢN (OPERATOR OVERLOADING)
         elif choice == "5":
@@ -350,16 +338,14 @@ def main():
                     break
                     
             if opp_account is None:
-                print("❌ Không tìm thấy tài khoản đối ứng hợp lệ trong hệ thống database!")
+                print(" Không tìm thấy tài khoản đối ứng hợp lệ trong hệ thống database!")
                 continue
                 
-            # Kiểm tra toán tử so sánh __lt__ gán nhãn Overloading
             if current_account < opp_account:
                 compare_res = "Số dư tài khoản A NHỎ HƠN số dư tài khoản B."
             else:
                 compare_res = "Số dư tài khoản A LỚN HƠN HOẶC BẰNG số dư tài khoản B."
                 
-            # Kiểm tra toán tử cộng gộp __add__ gán nhãn Overloading
             total_sum = current_account + opp_account
             
             print(f"[Kết quả So sánh (__lt__)]: {compare_res}")
@@ -378,7 +364,7 @@ def main():
             elif gateway_choice == "2":
                 gateway = ViettelMoneyGateway()
             elif gateway_choice == "3":
-                gateway = "Một Chuỗi Ký Tự Phá Hoại Hệ Thống"  # Không có hàm execute_pay
+                gateway = "Một Chuỗi Ký Tự Phá Hoại Hệ Thống"  
             else:
                 print("Lựa chọn không hợp lệ!")
                 continue
@@ -398,7 +384,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # Thử nghiệm Bẫy số 1 bảo vệ lớp trừu tượng trước khi vào vòng lặp chính
     try:
         print("[Kiểm tra hệ thống độc lập]: Thử khởi tạo trực tiếp BaseAccount...")
         acc = BaseAccount("0000000000", "Lỗi")
